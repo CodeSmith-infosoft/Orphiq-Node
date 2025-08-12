@@ -68,8 +68,8 @@ router.use(authenticateToken);
 
 router.get("/profile", generalLimiter, getProfile);
 router.put("/profile", generalLimiter, updateProfile);
-router.put("/deactive/:id", generalLimiter, deactivateUser);
-router.put("/update/:id", generalLimiter, updateUser);
+router.put("/deactiveUser/:id", generalLimiter, deactivateUser);
+router.put("/updateUser/:id", generalLimiter, updateUser);
 
 // Health check for auth service
 router.get("/health", (req, res) => {

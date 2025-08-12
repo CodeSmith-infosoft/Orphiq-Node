@@ -44,72 +44,53 @@ const generateEmployeeId = async (firstName) => {
 
 const register = async (req, res) => {
   try {
-    let {
-      email,
-      password,
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate,
-      isAdmin,
-      department,
-      joiningDate,
-    } = req.body;
+    // Allowed fields for registration
+    const allowedFields = [
+      "email",
+      "password",
+      "firstName",
+      "lastName",
+      "phoneNumber",
+      "position",
+      "salary",
+      "aaddharNo",
+      "panNo",
+      "birthDate",
+      "isAdmin",
+      "department",
+      "joiningDate",
+    ];
 
-    // Sanitize inputs
-    email = sanitizeEmail(email);
-    firstName = sanitizeString(firstName);
-    lastName = sanitizeString(lastName);
-    phoneNumber = sanitizeString(phoneNumber);
-    position = sanitizeString(position);
-    aaddharNo = sanitizeString(aaddharNo);
-    panNo = sanitizeString(panNo);
-    department = sanitizeString(department);
-    salary = salary !== undefined ? Number(salary) : undefined;
+    // Build sanitized data object
+    const userData = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        let value = req.body[field];
+        if (field === "email") value = sanitizeEmail(value);
+        else if (typeof value === "string") value = sanitizeString(value);
+        if (field === "salary") value = Number(value);
+        userData[field] = value;
+      }
+    });
 
     // Validate inputs
-    const validationError = validateRegistration({
-      email,
-      password,
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate,
-    });
+    const validationError = validateRegistration(userData);
     if (validationError) return errorResponse(res, validationError, 400);
 
-    // Check if user exists
-    if (await UserService.findByEmail(email)) {
+    // Check if email already exists
+    if (await UserService.findByEmail(userData.email)) {
       return errorResponse(res, "User already exists with this email", 400);
     }
 
-    // Generate employeeId and set joiningDate now
-    const employeeId = await generateEmployeeId(firstName);
+    // Generate employeeId
+    const employeeId = await generateEmployeeId(userData.firstName);
 
-    // Create user with new fields
+    // Create new user
     const user = await UserService.createUser({
-      email,
-      password,
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate: birthDate ? new Date(birthDate) : null,
-      isAdmin: isAdmin || false,
-      department,
+      ...userData,
+      birthDate: userData.birthDate ? new Date(userData.birthDate) : null,
+      isAdmin: userData.isAdmin || false,
       employeeId,
-      joiningDate,
       endDate: null,
     });
 
@@ -232,61 +213,39 @@ const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Set isActive to false and endDate to now
     const user = await UserService.findById(userId);
-
     if (!user) return errorResponse(res, "User not found", 404);
 
-    let {
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate,
-      isAdmin,
-      department,
-    } = req.body;
+    // Allowed fields for update
+    const allowedUpdateFields = [
+      "firstName",
+      "lastName",
+      "phoneNumber",
+      "position",
+      "salary",
+      "aaddharNo",
+      "panNo",
+      "birthDate",
+      "isAdmin",
+      "department",
+    ];
 
-    firstName = sanitizeString(firstName);
-    lastName = sanitizeString(lastName);
-    phoneNumber = sanitizeString(phoneNumber);
-    position = sanitizeString(position);
-    aaddharNo = sanitizeString(aaddharNo);
-    panNo = sanitizeString(panNo);
-    department = sanitizeString(department);
-
-    // Validate inputs for update (exclude employeeId, joiningDate)
-    const validationError = validateProfileUpdate({
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate,
-      isAdmin,
-      department,
+    // Sanitize & filter
+    const updateData = {};
+    allowedUpdateFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] =
+          typeof req.body[field] === "string"
+            ? sanitizeString(req.body[field])
+            : req.body[field];
+      }
     });
+
+    // Validate
+    const validationError = validateProfileUpdate(updateData);
     if (validationError) return errorResponse(res, validationError, 400);
 
-    // Prepare data object but exclude employeeId & joiningDate (cannot be updated)
-    const updateData = {
-      firstName,
-      lastName,
-      phoneNumber,
-      position,
-      salary,
-      aaddharNo,
-      panNo,
-      birthDate,
-      isAdmin,
-      department,
-    };
-
+    // Update in DB
     const updatedUser = await UserService.updateProfile(userId, updateData);
 
     return successResponse(res, {
@@ -339,5 +298,5 @@ module.exports = {
   getProfile,
   updateProfile,
   deactivateUser,
-  updateUser
+  updateUser,
 };
