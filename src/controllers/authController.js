@@ -292,6 +292,17 @@ const getProfile = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const user = await UserService.findAll();
+    if (!user) return errorResponse(res, "User not found", 404);
+    return successResponse(res, { data: { user } });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    return errorResponse(res, error.message || "Failed to fetch profile", 500);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -299,4 +310,5 @@ module.exports = {
   updateProfile,
   deactivateUser,
   updateUser,
+  getUsers
 };

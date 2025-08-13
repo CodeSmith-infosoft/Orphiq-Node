@@ -6,6 +6,7 @@ const compression = require("compression");
 const morgan = require("morgan");
 
 const authRoutes = require("./routes/authRoutes");
+const attendanceRoutes = require("./routes/attendanceRoutes");
 const { errorHandler, notFoundHandler } = require("./utils/responses");
 const { healthCheck } = require("./config/database");
 
@@ -93,6 +94,7 @@ app.use((req, res, next) => {
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {

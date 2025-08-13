@@ -9,67 +9,21 @@ const {
   getProfile,
   updateProfile,
   deactivateUser,
-  updateUser
+  updateUser,
+  getUsers,
 } = require("../controllers/authController");
 
-const {
-  authenticateToken,
-  optionalAuth,
-} = require("../middleware/authMiddleware");
-
-const createAccountLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    success: false,
-    message: "Too many accounts created from this IP, please try again later",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: {
-    success: false,
-    message: "Too many login attempts from this IP, please try again later",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: {
-    success: false,
-    message: "Too many requests from this IP, please try again later",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const passwordChangeLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // 5 password changes per hour
-  message: {
-    success: false,
-    message: "Too many password change attempts, please try again later",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-router.post("/register", createAccountLimiter, register);
-router.post("/login", loginLimiter, login);
+const { authenticateToken } = require("../middleware/authMiddleware");
+router.post("/register", register);
+router.post("/login",  login);
 
 router.use(authenticateToken);
 
-router.get("/profile", generalLimiter, getProfile);
-router.put("/profile", generalLimiter, updateProfile);
-router.put("/deactiveUser/:id", generalLimiter, deactivateUser);
-router.put("/updateUser/:id", generalLimiter, updateUser);
+router.get("/profile", getProfile);
+router.put("/profile", updateProfile);
+router.put("/deactiveUser/:id", deactivateUser);
+router.put("/updateUser/:id", updateUser);
+router.get("/allUsers", getUsers);
 
 // Health check for auth service
 router.get("/health", (req, res) => {

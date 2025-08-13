@@ -43,6 +43,10 @@ module.exports = {
     });
   },
 
+  findAll: async (id) => {
+    return prisma.user.findMany();
+  },
+
   updateProfile: async (id, data) => {
     // prevent update of employeeId and joiningDate explicitly
     if (data.employeeId) delete data.employeeId;

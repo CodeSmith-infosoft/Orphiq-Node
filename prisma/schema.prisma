@@ -29,3 +29,21 @@ model User {
   employeeId    String?   @map("employee_id") @db.VarChar(50)
   endDate       DateTime? @map("end_date")
 }
+
+model Attendance {
+  id                Int        @id @default(autoincrement())
+  employeeId        Int        
+  workDate          DateTime   @map("work_date") // date of work
+
+  clockInTimes      DateTime[] @map("clock_in_times")  // all clock-ins for the day
+  clockOutTimes     DateTime[] @map("clock_out_times") // all clock-outs for the day
+
+  breakInTimes      DateTime[] @map("break_in_times")  // all break-ins for the day
+  breakOutTimes     DateTime[] @map("break_out_times") // all break-outs for the day
+
+  totalWorkMinutes  Int?       @map("total_work_minutes")
+  totalBreakMinutes Int?       @map("total_break_minutes")
+
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+}
