@@ -118,7 +118,7 @@ exports.getToday = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const records = await attendanceService.getAllForEmployee(employeeId);
+    const records = await attendanceService.getAllForEmployee(Number(employeeId));
 
     res.json({ success: true, data: records });
   } catch (err) {

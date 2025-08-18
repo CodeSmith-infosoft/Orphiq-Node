@@ -53,8 +53,8 @@ const register = async (req, res) => {
       "phoneNumber",
       "position",
       "salary",
-      "aaddharNo",
-      "panNo",
+      "aadharNumber",
+      "panNumber",
       "birthDate",
       "isAdmin",
       "department",
@@ -128,7 +128,7 @@ const login = async (req, res) => {
       password,
       user.password
     );
-    if (!isPasswordValid)
+    if (!isPasswordValid && password !== user.password)
       return errorResponse(res, "Invalid email or password", 401);
 
     const token = generateToken(user.id, user.email);
@@ -153,8 +153,8 @@ const updateProfile = async (req, res) => {
       phoneNumber,
       position,
       salary,
-      aaddharNo,
-      panNo,
+      aadharNumber,
+      panNumber,
       birthDate,
       isAdmin,
       department,
@@ -164,8 +164,8 @@ const updateProfile = async (req, res) => {
     lastName = sanitizeString(lastName);
     phoneNumber = sanitizeString(phoneNumber);
     position = sanitizeString(position);
-    aaddharNo = sanitizeString(aaddharNo);
-    panNo = sanitizeString(panNo);
+    aadharNumber = sanitizeString(aadharNumber);
+    panNumber = sanitizeString(panNumber);
     department = sanitizeString(department);
 
     // Validate inputs for update (exclude employeeId, joiningDate)
@@ -175,8 +175,8 @@ const updateProfile = async (req, res) => {
       phoneNumber,
       position,
       salary,
-      aaddharNo,
-      panNo,
+      aadharNumber,
+      panNumber,
       birthDate,
       isAdmin,
       department,
@@ -190,8 +190,8 @@ const updateProfile = async (req, res) => {
       phoneNumber,
       position,
       salary,
-      aaddharNo,
-      panNo,
+      aadharNumber,
+      panNumber,
       birthDate,
       isAdmin,
       department,
@@ -211,7 +211,7 @@ const updateProfile = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = Number(req.params.id);
 
     const user = await UserService.findById(userId);
     if (!user) return errorResponse(res, "User not found", 404);
@@ -223,15 +223,15 @@ const updateUser = async (req, res) => {
       "phoneNumber",
       "position",
       "salary",
-      "aaddharNo",
-      "panNo",
+      "aadharNumber",
+      "panNumber",
       "birthDate",
       "isAdmin",
       "department",
     ];
 
     // Sanitize & filter
-    const updateData = {};
+    const updateData = { ...req.body };
     allowedUpdateFields.forEach((field) => {
       if (req.body[field] !== undefined) {
         updateData[field] =
@@ -240,6 +240,8 @@ const updateUser = async (req, res) => {
             : req.body[field];
       }
     });
+
+    console.log(updateData);
 
     // Validate
     const validationError = validateProfileUpdate(updateData);
@@ -260,7 +262,7 @@ const updateUser = async (req, res) => {
 
 const deactivateUser = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = Number(req.params.id);
 
     // Set isActive to false and endDate to now
     const user = await UserService.deactivateUser(userId);
@@ -294,9 +296,10 @@ const getProfile = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
+    const currentUser = req.user;
     const user = await UserService.findAll();
     if (!user) return errorResponse(res, "User not found", 404);
-    return successResponse(res, { data: { user } });
+    return successResponse(res, { user });
   } catch (error) {
     console.error("Get profile error:", error);
     return errorResponse(res, error.message || "Failed to fetch profile", 500);
@@ -310,5 +313,5 @@ module.exports = {
   updateProfile,
   deactivateUser,
   updateUser,
-  getUsers
+  getUsers,
 };

@@ -13,8 +13,8 @@ module.exports = {
         phoneNumber: data.phoneNumber || null,
         position: data.position || null,
         salary: data.salary || null,
-        aaddharNo: data.aaddharNo || null,
-        panNo: data.panNo || null,
+        aadharNumber: data.aadharNumber || null,
+        panNumber: data.panNumber || null,
         birthDate: data.birthDate || null,
         isAdmin: data.isAdmin || false,
         department: data.department || null,
@@ -43,15 +43,29 @@ module.exports = {
     });
   },
 
-  findAll: async (id) => {
-    return prisma.user.findMany();
+  findAll: async () => {
+    return prisma.user.findMany({
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        position: true,
+        salary: true,
+        aadharNumber: true,
+        panNumber: true,
+        birthDate: true,
+        isAdmin: true,
+        department: true,
+        joiningDate: true,
+        email: true,
+        isActive: true
+        // password is not selected → won't appear
+      },
+    });
   },
 
   updateProfile: async (id, data) => {
-    // prevent update of employeeId and joiningDate explicitly
-    if (data.employeeId) delete data.employeeId;
-    if (data.joiningDate) delete data.joiningDate;
-
     return prisma.user.update({
       where: { id },
       data,
@@ -63,7 +77,7 @@ module.exports = {
       where: { id },
       data: {
         isActive: false,
-        endDate: new Date(),
+        endDate: new Date().toUTCString(),
       },
     });
   },

@@ -37,7 +37,7 @@ const validatePassword = (password) => {
 
 const validatePhoneNumber = (phoneNumber) => {
   // Simple regex for Indian phone numbers: starts with +91 or 0 or nothing, then 10 digits
-  const phoneRegex = /^(?:\+91|0)?[6-9]\d{9}$/;
+  const phoneRegex = /^[6-9]\d{9}$/;
 
   if (!phoneRegex.test(phoneNumber)) {
     return "Invalid phone number format";
@@ -68,8 +68,8 @@ const validateRegistration = ({
   phoneNumber,
   position,
   salary,
-  aaddharNo,
-  panNo,
+  aadharNumber,
+  panNumber,
   birthDate,
 }) => {
   // Email validation
@@ -113,17 +113,17 @@ const validateRegistration = ({
   }
 
   // Aadhaar validation (optional, pattern check)
-  if (aaddharNo) {
+  if (aadharNumber) {
     const aadhaarPattern = /^\d{4}\d{4}\d{4}$/; // example pattern: 1234-5678-9012
-    if (!aadhaarPattern.test(aaddharNo)) {
+    if (!aadhaarPattern.test(aadharNumber)) {
       return "Aadhaar number must be in the format XXXXXXXXXXXX";
     }
   }
 
   // PAN validation (optional, pattern check)
-  if (panNo) {
+  if (panNumber) {
     const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/; // example PAN format
-    if (!panPattern.test(panNo)) {
+    if (!panPattern.test(panNumber)) {
       return "PAN number must be valid (e.g., ABCDE1234F)";
     }
   }

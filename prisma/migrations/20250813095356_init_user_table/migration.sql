@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "end_date" SET DATA TYPE TEXT,
+ALTER COLUMN "joining_date" SET DATA TYPE TEXT;
