@@ -7,6 +7,8 @@ const morgan = require("morgan");
 
 const authRoutes = require("./routes/authRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const holidayRoutes = require("./routes/holidayRoutes");
+const leaveRoutes = require("./routes/leaveRoutes");
 const { errorHandler, notFoundHandler } = require("./utils/responses");
 const { healthCheck } = require("./config/database");
 
@@ -95,6 +97,8 @@ app.use((req, res, next) => {
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/holiday", holidayRoutes);
+app.use("/api/leave", leaveRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {

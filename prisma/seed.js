@@ -19,7 +19,6 @@ async function main() {
       firstName: "Admin",
       lastName: "User",
       isActive: true,
-      emailVerified: true,
     },
   });
 
@@ -33,7 +32,6 @@ async function main() {
       firstName: "John",
       lastName: "Doe",
       isActive: true,
-      emailVerified: true,
     },
     {
       email: "jane.smith@example.com",
@@ -41,7 +39,6 @@ async function main() {
       firstName: "Jane",
       lastName: "Smith",
       isActive: true,
-      emailVerified: false,
     },
     {
       email: "test.user@example.com",
@@ -49,7 +46,6 @@ async function main() {
       firstName: "Test",
       lastName: "User",
       isActive: true,
-      emailVerified: true,
     },
   ];
 

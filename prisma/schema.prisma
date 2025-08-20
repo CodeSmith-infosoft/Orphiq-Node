@@ -28,18 +28,24 @@ model User {
   joiningDate   String?   @map("joining_date")
   employeeId    String?   @map("employee_id") @db.VarChar(50)
   endDate       DateTime? @map("end_date")
+  leaves        Leave[]
 }
 
 model Attendance {
   id                Int        @id @default(autoincrement())
   employeeId        Int        
-  workDate          DateTime   @map("work_date") // date of work
+  workDate          DateTime   @map("work_date")
 
-  clockInTimes      DateTime[] @map("clock_in_times")  // all clock-ins for the day
-  clockOutTimes     DateTime[] @map("clock_out_times") // all clock-outs for the day
+  clockInTimes      DateTime[] @map("clock_in_times")
+  clockOutTimes     DateTime[] @map("clock_out_times")
 
-  breakInTimes      DateTime[] @map("break_in_times")  // all break-ins for the day
-  breakOutTimes     DateTime[] @map("break_out_times") // all break-outs for the day
+  breakInTimes      DateTime[] @map("break_in_times")
+  breakOutTimes     DateTime[] @map("break_out_times")
+
+  clockInLocations  Json?      @map("clock_in_locations")
+  clockOutLocations Json?      @map("clock_out_locations")
+  breakInLocations  Json?      @map("break_in_locations")
+  breakOutLocations Json?      @map("break_out_locations")
 
   totalWorkMinutes  Int?       @map("total_work_minutes")
   totalBreakMinutes Int?       @map("total_break_minutes")
@@ -47,3 +53,26 @@ model Attendance {
   createdAt         DateTime   @default(now()) @map("created_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
 }
+
+model Holiday {
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(255)
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+}
+
+model Leave {
+  id          Int       @id @default(autoincrement())
+  employeeId  Int
+  employee    User  @relation(fields: [employeeId], references: [id])
+  leaveType   String    @db.VarChar(100) 
+  startDate   DateTime
+  endDate     DateTime
+  reason      String
+  status      String    @default("Pending")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+}
+

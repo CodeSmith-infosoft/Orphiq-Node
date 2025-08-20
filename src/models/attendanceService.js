@@ -32,42 +32,86 @@ module.exports = {
     return record;
   },
 
-  // Push a clock-in timestamp
-  addClockIn: async (id, time) => {
+  // // Push a clock-in timestamp
+  // addClockIn: async (id, time) => {
+  //   return prisma.attendance.update({
+  //     where: { id },
+  //     data: {
+  //       clockInTimes: { push: time },
+  //     },
+  //   });
+  // },
+
+  // // Push a clock-out timestamp
+  // addClockOut: async (id, time) => {
+  //   return prisma.attendance.update({
+  //     where: { id },
+  //     data: {
+  //       clockOutTimes: { push: time },
+  //     },
+  //   });
+  // },
+
+  // // Push break-in timestamp
+  // addBreakIn: async (id, time) => {
+  //   return prisma.attendance.update({
+  //     where: { id },
+  //     data: {
+  //       breakInTimes: { push: time },
+  //     },
+  //   });
+  // },
+
+  // // Push break-out timestamp
+  // addBreakOut: async (id, time) => {
+  //   return prisma.attendance.update({
+  //     where: { id },
+  //     data: {
+  //       breakOutTimes: { push: time },
+  //     },
+  //   });
+  // },
+
+  // Push a clock-in timestamp + location
+  addClockIn: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
       data: {
         clockInTimes: { push: time },
+        clockInLocations: { push: location },
       },
     });
   },
 
-  // Push a clock-out timestamp
-  addClockOut: async (id, time) => {
+  // Push a clock-out timestamp + location
+  addClockOut: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
       data: {
         clockOutTimes: { push: time },
+        clockOutLocations: { push: location },
       },
     });
   },
 
-  // Push break-in timestamp
-  addBreakIn: async (id, time) => {
+  // Push break-in timestamp + location
+  addBreakIn: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
       data: {
         breakInTimes: { push: time },
+        breakInLocations: { push: location },
       },
     });
   },
 
-  // Push break-out timestamp
-  addBreakOut: async (id, time) => {
+  // Push break-out timestamp + location
+  addBreakOut: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
       data: {
         breakOutTimes: { push: time },
+        breakOutLocations: { push: location },
       },
     });
   },
