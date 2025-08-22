@@ -9,49 +9,66 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  email         String    @unique @db.VarChar(255)
-  password      String    @db.VarChar(255)
-  firstName     String?   @map("first_name") @db.VarChar(100)
-  lastName      String?   @map("last_name") @db.VarChar(100)
-  phoneNumber   String?   @map("phone_number") @db.VarChar(15)
-  position      String?   @db.VarChar(100)
-  salary        Decimal?  @db.Decimal(10,2)
-  aadharNumber  String?   @map("aaddhar_no") @db.VarChar(12)
-  panNumber     String?   @map("pan_no") @db.VarChar(10)
-  birthDate     DateTime? @map("birth_date")
-  isActive      Boolean   @default(true) @map("is_active")
-  isAdmin       Boolean   @default(false) @map("is_admin")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  department    String?   @db.VarChar(100)
-  joiningDate   String?   @map("joining_date")
-  employeeId    String?   @map("employee_id") @db.VarChar(50)
-  endDate       DateTime? @map("end_date")
+  id            Int            @id @default(autoincrement())
+  email         String         @unique @db.VarChar(255)
+  password      String         @db.VarChar(255)
+  firstName     String?        @map("first_name") @db.VarChar(100)
+  lastName      String?        @map("last_name") @db.VarChar(100)
+  phoneNumber   String?        @map("phone_number") @db.VarChar(15)
+  position      String?        @db.VarChar(100)
+  salary        Decimal?       @db.Decimal(10,2)
+  aadharNumber  String?        @map("aaddhar_no") @db.VarChar(12)
+  panNumber     String?        @map("pan_no") @db.VarChar(10)
+  birthDate     DateTime?      @map("birth_date")
+  isActive      Boolean        @default(true) @map("is_active")
+  isAdmin       Boolean        @default(false) @map("is_admin")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  department    String?        @db.VarChar(100)
+  joiningDate   String?        @map("joining_date")
+  employeeId    String?        @map("employee_id") @db.VarChar(50)
+  endDate       DateTime?      @map("end_date")
+  attendances   Attendance[]
+  screenshots   Screenshot[]
   leaves        Leave[]
 }
 
 model Attendance {
-  id                Int        @id @default(autoincrement())
-  employeeId        Int        
-  workDate          DateTime   @map("work_date")
+  id                Int           @id @default(autoincrement())
+  employeeId        Int           
+  workDate          DateTime      @map("work_date")
+   
+  clockInTimes      DateTime[]    @map("clock_in_time")
+  clockOutTimes     DateTime[]    @map("clock_out_time")
 
-  clockInTimes      DateTime[] @map("clock_in_times")
-  clockOutTimes     DateTime[] @map("clock_out_times")
+  breakInTimes      DateTime[]    @map("break_in_times")
+  breakOutTimes     DateTime[]    @map("break_out_times")
 
-  breakInTimes      DateTime[] @map("break_in_times")
-  breakOutTimes     DateTime[] @map("break_out_times")
+  clockInLocations  Json?         @map("clock_in_location")
+  clockOutLocations Json?         @map("clock_out_location")
 
-  clockInLocations  Json?      @map("clock_in_locations")
-  clockOutLocations Json?      @map("clock_out_locations")
-  breakInLocations  Json?      @map("break_in_locations")
-  breakOutLocations Json?      @map("break_out_locations")
+  breakInLocations  Json?         @map("break_in_locations")
+  breakOutLocations Json?         @map("break_out_locations")
+   
+  totalWorkMinutes  Int?          @map("total_work_minutes")
+  totalBreakMinutes Int?          @map("total_break_minutes")
 
-  totalWorkMinutes  Int?       @map("total_work_minutes")
-  totalBreakMinutes Int?       @map("total_break_minutes")
+  user              User          @relation(fields: [employeeId], references: [id])
+  screenshots       Screenshot[]
 
-  createdAt         DateTime   @default(now()) @map("created_at")
-  updatedAt         DateTime   @updatedAt @map("updated_at")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+}
+
+model Screenshot {
+  id           Int         @id @default(autoincrement())
+  employeeId   Int
+  attendanceId Int?
+  imagePath    String      @map("image_path")
+  takenAt      DateTime    @default(now())    // when screenshot was taken
+  date         DateTime    @map("screenshot_date") // for quick filtering by day
+  user         User        @relation(fields: [employeeId], references: [id])
+  attendance   Attendance? @relation(fields: [attendanceId], references: [id])
 }
 
 model Holiday {
@@ -66,7 +83,7 @@ model Holiday {
 model Leave {
   id          Int       @id @default(autoincrement())
   employeeId  Int
-  employee    User  @relation(fields: [employeeId], references: [id])
+  employee    User      @relation(fields: [employeeId], references: [id])
   leaveType   String    @db.VarChar(100) 
   startDate   DateTime
   endDate     DateTime
