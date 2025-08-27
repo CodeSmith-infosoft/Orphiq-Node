@@ -11,14 +11,16 @@ const {
   deactivateUser,
   updateUser,
   getUsers,
+  logout,
 } = require("../controllers/authController");
 
 const { authenticateToken } = require("../middleware/authMiddleware");
 router.post("/register", register);
-router.post("/login",  login);
+router.post("/login", login);
 
 router.use(authenticateToken);
 
+router.post("/logout", logout);
 router.get("/profile", getProfile);
 router.put("/profile", updateProfile);
 router.put("/deactiveUser/:id", deactivateUser);

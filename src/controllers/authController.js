@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserService = require("../models/userService");
+const { prisma } = require("../config/database");
 const {
   validateRegistration,
   validateLogin,
@@ -112,6 +113,39 @@ const register = async (req, res) => {
   }
 };
 
+// const login = async (req, res) => {
+//   try {
+//     let { email, password } = req.body;
+//     email = sanitizeEmail(email);
+
+//     const validationError = validateLogin({ email, password });
+//     if (validationError) return errorResponse(res, validationError, 400);
+
+//     const user = await UserService.findByEmail(email, true);
+//     if (!user || !user.isActive)
+//       return errorResponse(res, "Invalid email or password", 401);
+
+//     const isPasswordValid = await UserService.verifyPassword(
+//       password,
+//       user.password
+//     );
+//     if (!isPasswordValid && password !== user.password)
+//       return errorResponse(res, "Invalid email or password", 401);
+
+//     const token = generateToken(user.id, user.email);
+//     const refreshToken = generateRefreshToken(user.id);
+
+//     const { password: _, ...userWithoutPassword } = user;
+//     return successResponse(res, {
+//       message: "Login successful",
+//       data: { token, refreshToken, user: userWithoutPassword },
+//     });
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     return errorResponse(res, error.message || "Login failed", 500);
+//   }
+// };
+
 const login = async (req, res) => {
   try {
     let { email, password } = req.body;
@@ -131,8 +165,23 @@ const login = async (req, res) => {
     if (!isPasswordValid && password !== user.password)
       return errorResponse(res, "Invalid email or password", 401);
 
+    // 👇 Check if user already has an active session
+    if (user.currentToken) {
+      return errorResponse(
+        res,
+        "User already logged in on another device",
+        403
+      );
+    }
+
     const token = generateToken(user.id, user.email);
     const refreshToken = generateRefreshToken(user.id);
+
+    // 👇 Save token in DB
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { currentToken: token },
+    });
 
     const { password: _, ...userWithoutPassword } = user;
     return successResponse(res, {
@@ -306,6 +355,19 @@ const getUsers = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { currentToken: null },
+    });
+    return successResponse(res, { message: "Logged out successfully" });
+  } catch (err) {
+    console.log(err)
+    return errorResponse(res, "Logout failed", 500);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -314,4 +376,5 @@ module.exports = {
   deactivateUser,
   updateUser,
   getUsers,
+  logout,
 };

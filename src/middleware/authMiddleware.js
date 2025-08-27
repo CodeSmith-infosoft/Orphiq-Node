@@ -1,21 +1,51 @@
 // src/middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
 const { errorResponse } = require("../utils/responses");
+const { prisma } = require("../config/database");
 
 const JWT_SECRET =
   process.env.JWT_SECRET || "your_jwt_secret_key_change_this_in_production";
 
 // Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
+// const authenticateToken = (req, res, next) => {
+//   try {
+//     const authHeader = req.headers["authorization"];
+//     const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+//     if (!token) {
+//       return errorResponse(res, "Access token required", 401);
+//     }
+
+//     jwt.verify(token, JWT_SECRET, (err, decoded) => {
+//       if (err) {
+//         if (err.name === "TokenExpiredError") {
+//           return errorResponse(res, "Token expired", 401);
+//         }
+//         if (err.name === "JsonWebTokenError") {
+//           return errorResponse(res, "Invalid token", 401);
+//         }
+//         return errorResponse(res, "Token verification failed", 403);
+//       }
+
+//       req.user = decoded;
+//       next();
+//     });
+//   } catch (error) {
+//     console.error("Auth middleware error:", error);
+//     return errorResponse(res, "Authentication failed", 500);
+//   }
+// };
+
+const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
       return errorResponse(res, "Access token required", 401);
     }
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
           return errorResponse(res, "Token expired", 401);
@@ -26,7 +56,19 @@ const authenticateToken = (req, res, next) => {
         return errorResponse(res, "Token verification failed", 403);
       }
 
-      req.user = decoded;
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user) {
+        return errorResponse(res, "User not found", 404);
+      }
+
+      if (user.currentToken !== token) {
+        return errorResponse(res, "Session invalid. Please log in again.", 401);
+      }
+
+      req.user = user;
       next();
     });
   } catch (error) {

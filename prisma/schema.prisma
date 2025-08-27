@@ -27,6 +27,7 @@ model User {
   joiningDate   String?        @map("joining_date")
   employeeId    String?        @map("employee_id") @db.VarChar(50)
   endDate       DateTime?      @map("end_date")
+  currentToken  String?
   attendances   Attendance[]
   screenshots   Screenshot[]
   leaves        Leave[]
