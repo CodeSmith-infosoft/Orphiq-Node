@@ -10,6 +10,7 @@ const attendanceRoutes = require("./routes/attendanceRoutes");
 const holidayRoutes = require("./routes/holidayRoutes");
 const leaveRoutes = require("./routes/leaveRoutes");
 const screenshotRoutes = require("./routes/screenshotRoutes");
+const noticeRoutes = require("./routes/noticeRoutes");
 const { errorHandler, notFoundHandler } = require("./utils/responses");
 const { healthCheck } = require("./config/database");
 
@@ -101,6 +102,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/holiday", holidayRoutes);
 app.use("/api/leave", leaveRoutes);
 app.use("/api/screenshot", screenshotRoutes);
+app.use("/api/notice", noticeRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {
