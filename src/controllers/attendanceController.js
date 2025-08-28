@@ -11,98 +11,10 @@ function calculateTotalMinutes(inTimes, outTimes) {
   return Math.round(total);
 }
 
-// // Clock In
-// exports.clockIn = async (req, res) => {
-//   try {
-//     const employeeId = req.user.userId;
-//     const record = await attendanceService.createOrGetToday(employeeId);
-
-//     const updated = await attendanceService.addClockIn(record.id, new Date());
-
-//     res.json({ success: true, data: updated });
-//   } catch (err) {
-//     console.error("Clock In Error:", err);
-//     res.status(500).json({ success: false, message: "Error clocking in" });
-//   }
-// };
-
-// // Clock Out
-// exports.clockOut = async (req, res) => {
-//   try {
-//     const employeeId = req.user.userId;
-//     const record = await attendanceService.createOrGetToday(employeeId);
-
-//     const updatedRecord = await attendanceService.addClockOut(
-//       record.id,
-//       new Date()
-//     );
-
-//     const totalWork = calculateTotalMinutes(
-//       updatedRecord.clockInTimes,
-//       updatedRecord.clockOutTimes
-//     );
-
-//     const finalRecord = await attendanceService.updateTotals(
-//       record.id,
-//       totalWork,
-//       updatedRecord.totalBreakMinutes
-//     );
-
-//     res.json({ success: true, data: finalRecord });
-//   } catch (err) {
-//     console.error("Clock Out Error:", err);
-//     res.status(500).json({ success: false, message: "Error clocking out" });
-//   }
-// };
-
-// // Break In
-// exports.breakIn = async (req, res) => {
-//   try {
-//     const employeeId = req.user.userId;
-//     const record = await attendanceService.createOrGetToday(employeeId);
-
-//     const updated = await attendanceService.addBreakIn(record.id, new Date());
-
-//     res.json({ success: true, data: updated });
-//   } catch (err) {
-//     console.error("Break In Error:", err);
-//     res.status(500).json({ success: false, message: "Error starting break" });
-//   }
-// };
-
-// // Break Out
-// exports.breakOut = async (req, res) => {
-//   try {
-//     const employeeId = req.user.userId;
-//     const record = await attendanceService.createOrGetToday(employeeId);
-
-//     const updatedRecord = await attendanceService.addBreakOut(
-//       record.id,
-//       new Date()
-//     );
-
-//     const totalBreak = calculateTotalMinutes(
-//       updatedRecord.breakInTimes,
-//       updatedRecord.breakOutTimes
-//     );
-
-//     const finalRecord = await attendanceService.updateTotals(
-//       record.id,
-//       updatedRecord.totalWorkMinutes,
-//       totalBreak
-//     );
-
-//     res.json({ success: true, data: finalRecord });
-//   } catch (err) {
-//     console.error("Break Out Error:", err);
-//     res.status(500).json({ success: false, message: "Error ending break" });
-//   }
-// };
-
 // Clock In
 exports.clockIn = async (req, res) => {
   try {
-    const employeeId = req.user.userId;
+    const employeeId = req.user.id;
     const { time, location } = req.body;
 
     const record = await attendanceService.createOrGetToday(employeeId);
@@ -115,7 +27,7 @@ exports.clockIn = async (req, res) => {
 
     res.json({ success: true, data: updated });
   } catch (err) {
-    console.error("Clock In Error:", err);
+    // console.error("Clock In Error:", err);
     res.status(500).json({ success: false, message: "Error clocking in" });
   }
 };
@@ -123,7 +35,7 @@ exports.clockIn = async (req, res) => {
 // Clock Out
 exports.clockOut = async (req, res) => {
   try {
-    const employeeId = req.user.userId;
+    const employeeId = req.user.id;
     const { time, location } = req.body;
 
     const record = await attendanceService.createOrGetToday(employeeId);
@@ -155,7 +67,7 @@ exports.clockOut = async (req, res) => {
 // Break In
 exports.breakIn = async (req, res) => {
   try {
-    const employeeId = req.user.userId;
+    const employeeId = req.user.id;
     const { time, location } = req.body;
 
     const record = await attendanceService.createOrGetToday(employeeId);
@@ -176,7 +88,7 @@ exports.breakIn = async (req, res) => {
 // Break Out
 exports.breakOut = async (req, res) => {
   try {
-    const employeeId = req.user.userId;
+    const employeeId = req.user.id;
     const { time, location } = req.body;
 
     const record = await attendanceService.createOrGetToday(employeeId);
@@ -208,7 +120,7 @@ exports.breakOut = async (req, res) => {
 // Get today's attendance
 exports.getToday = async (req, res) => {
   try {
-    const employeeId = req.user.userId;
+    const employeeId = req.user.id;
     const record = await attendanceService.getByDate(employeeId, new Date());
 
     res.json({ success: true, data: record });

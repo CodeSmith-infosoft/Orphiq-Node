@@ -14,13 +14,11 @@ const { successResponse, errorResponse } = require("../utils/responses");
 
 const JWT_SECRET =
   process.env.JWT_SECRET || "your_jwt_secret_key_change_this_in_production";
-const JWT_EXPIRY = process.env.JWT_EXPIRY || "24h";
 
 const generateToken = (userId, email) => {
   return jwt.sign(
     { userId, email, iat: Math.floor(Date.now() / 1000) },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRY }
+    JWT_SECRET
   );
 };
 
