@@ -332,7 +332,7 @@ const deactivateUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    const user = await UserService.findById(req.user.userId);
+    const user = await UserService.findById(req.user.id);
     if (!user) return errorResponse(res, "User not found", 404);
     return successResponse(res, { data: { user } });
   } catch (error) {

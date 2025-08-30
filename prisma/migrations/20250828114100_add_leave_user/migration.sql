@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "casual_leaves" INTEGER NOT NULL DEFAULT 6,
+ADD COLUMN     "sick_leaves" INTEGER NOT NULL DEFAULT 6;

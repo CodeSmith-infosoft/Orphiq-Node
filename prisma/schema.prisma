@@ -28,6 +28,8 @@ model User {
   employeeId    String?        @map("employee_id") @db.VarChar(50)
   endDate       DateTime?      @map("end_date")
   currentToken  String?
+  casualLeaves  Int            @default(6) @map("casual_leaves")
+  sickLeaves    Int            @default(6) @map("sick_leaves")
   attendances   Attendance[]
   screenshots   Screenshot[]
   leaves        Leave[]
@@ -55,6 +57,7 @@ model Attendance {
 
   user              User          @relation(fields: [employeeId], references: [id])
   screenshots       Screenshot[]
+  request           Request[]
 
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
@@ -104,3 +107,15 @@ model Notice {
   updatedAt    DateTime  @updatedAt @map("updated_at")
 }
 
+model Request {
+  id            Int        @id @default(autoincrement())
+  attendanceId  Int
+  date          DateTime
+  clockInTime   DateTime
+  clockOutTime  DateTime?
+  breakHours    Float?
+  reason        String?
+  attendance    Attendance @relation(fields: [attendanceId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
