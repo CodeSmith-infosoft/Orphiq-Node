@@ -1,45 +1,45 @@
-exports.addWorkLog = async (req, res) => {
-  try {
-    const { attendanceId, date, clockInTime, clockOutTime, breakHours, reason } = req.body;
+const requestService = require("../models/requestService");
 
-    const workLog = await requestService.createReqest({
-      attendanceId: Number(attendanceId),
+const addRequest = async (req, res) => {
+  try {
+    const {
+      attendanceId,
+      date,
+      clockInTime,
+      clockOutTime,
+      breakHours,
+      reason,
+    } = req.body;
+
+    const request = await requestService.createRequest({
+      attendanceId,
       date: new Date(date),
-      clockInTime: new Date(clockInTime),
-      clockOutTime: clockOutTime ? new Date(clockOutTime) : null,
+      clockInTime: new Date(`${date}T${clockInTime}:00`),
+      clockOutTime: clockOutTime
+        ? new Date(`${date}T${clockOutTime}:00`)
+        : null,
       breakHours,
       reason,
     });
 
-    res.status(201).json({ success: true, data: workLog });
+    res.status(201).json({ success: true, data: request });
   } catch (err) {
-    console.error("Create WorkLog Error:", err);
-    res.status(500).json({ success: false, message: "Error creating WorkLog" });
+    console.error("Create Request Error:", err);
+    res.status(500).json({ success: false, message: "Error creating Request" });
   }
 };
 
-exports.getWorkLogs = async (req, res) => {
+const getRequest = async (req, res) => {
   try {
-    const logs = await workLogService.getAllWorkLogs();
+    const logs = await requestService.getAllRequest();
     res.json({ success: true, data: logs });
   } catch (err) {
-    console.error("Get WorkLogs Error:", err);
-    res.status(500).json({ success: false, message: "Error fetching WorkLogs" });
+    console.error("Get Request Error:", err);
+    res.status(500).json({ success: false, message: "Error fetching Request" });
   }
 };
 
-exports.getWorkLog = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const log = await workLogService.getWorkLogById(id);
-
-    if (!log) {
-      return res.status(404).json({ success: false, message: "WorkLog not found" });
-    }
-
-    res.json({ success: true, data: log });
-  } catch (err) {
-    console.error("Get WorkLog Error:", err);
-    res.status(500).json({ success: false, message: "Error fetching WorkLog" });
-  }
+module.exports = {
+  addRequest,
+  getRequest,
 };

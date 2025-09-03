@@ -1,8 +1,6 @@
-// src/models/attendanceService.js
 const { prisma } = require("../config/database");
 
 module.exports = {
-  // Create today's attendance record if not exists
   createOrGetToday: async (employeeId) => {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -28,51 +26,9 @@ module.exports = {
         },
       });
     }
-
     return record;
   },
 
-  // // Push a clock-in timestamp
-  // addClockIn: async (id, time) => {
-  //   return prisma.attendance.update({
-  //     where: { id },
-  //     data: {
-  //       clockInTimes: { push: time },
-  //     },
-  //   });
-  // },
-
-  // // Push a clock-out timestamp
-  // addClockOut: async (id, time) => {
-  //   return prisma.attendance.update({
-  //     where: { id },
-  //     data: {
-  //       clockOutTimes: { push: time },
-  //     },
-  //   });
-  // },
-
-  // // Push break-in timestamp
-  // addBreakIn: async (id, time) => {
-  //   return prisma.attendance.update({
-  //     where: { id },
-  //     data: {
-  //       breakInTimes: { push: time },
-  //     },
-  //   });
-  // },
-
-  // // Push break-out timestamp
-  // addBreakOut: async (id, time) => {
-  //   return prisma.attendance.update({
-  //     where: { id },
-  //     data: {
-  //       breakOutTimes: { push: time },
-  //     },
-  //   });
-  // },
-
-  // Push a clock-in timestamp + location
   addClockIn: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
@@ -83,7 +39,6 @@ module.exports = {
     });
   },
 
-  // Push a clock-out timestamp + location
   addClockOut: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
@@ -94,7 +49,6 @@ module.exports = {
     });
   },
 
-  // Push break-in timestamp + location
   addBreakIn: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
@@ -105,7 +59,6 @@ module.exports = {
     });
   },
 
-  // Push break-out timestamp + location
   addBreakOut: async (id, time, location) => {
     return prisma.attendance.update({
       where: { id },
@@ -116,7 +69,6 @@ module.exports = {
     });
   },
 
-  // Update totals
   updateTotals: async (id, totalWorkMinutes, totalBreakMinutes) => {
     return prisma.attendance.update({
       where: { id },
@@ -127,7 +79,6 @@ module.exports = {
     });
   },
 
-  // Get attendance by date
   getByDate: async (employeeId, date) => {
     const startDate = new Date(date);
     startDate.setHours(0, 0, 0, 0);
@@ -140,11 +91,17 @@ module.exports = {
     });
   },
 
-  // Get all attendance for employee
   getAllForEmployee: async (employeeId) => {
     return prisma.attendance.findMany({
       where: { employeeId },
       orderBy: { workDate: "desc" },
+    });
+  },
+
+  updateAttendance: async (id, payload) => {
+    return prisma.attendance.update({
+      where: { id: Number(id) },
+      data: payload,
     });
   },
 };

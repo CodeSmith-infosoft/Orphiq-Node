@@ -9,6 +9,7 @@ router.post("/clockin", attendanceController.clockIn);
 router.post("/clockout", attendanceController.clockOut);
 router.post("/breakin", attendanceController.breakIn);
 router.post("/breakout", attendanceController.breakOut);
+router.put("/:id", attendanceController.update);
 
 // Fetch data
 router.get("/today/:employeeId", attendanceController.getToday);

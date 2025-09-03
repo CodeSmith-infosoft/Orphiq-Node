@@ -113,7 +113,7 @@ model Request {
   date          DateTime
   clockInTime   DateTime
   clockOutTime  DateTime?
-  breakHours    Float?
+  breakHours    String?
   reason        String?
   attendance    Attendance @relation(fields: [attendanceId], references: [id])
   createdAt     DateTime   @default(now())

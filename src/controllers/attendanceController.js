@@ -148,3 +148,26 @@ exports.getAll = async (req, res) => {
       .json({ success: false, message: "Error fetching attendance" });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const payload = req.body;
+
+    if (payload.clockInTimes && payload.clockOutTimes) {
+      const inTime = new Date(payload.clockInTimes[0]);
+      const outTime = new Date(payload.clockOutTimes[0]);
+      const diffMinutes = (outTime - inTime) / 60000;
+      payload.totalWorkMinutes = diffMinutes
+    }
+
+    const updated = await attendanceService.updateAttendance(id, payload);
+
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    console.error("Update Attendance Error:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating attendance" });
+  }
+};
