@@ -46,15 +46,19 @@ exports.clockOut = async (req, res) => {
       location || "Unknown"
     );
 
-    const totalWork = calculateTotalMinutes(
+    const netWorkMinutes = calculateTotalMinutes(
       updatedRecord.clockInTimes,
       updatedRecord.clockOutTimes
     );
 
+    const totalWork = netWorkMinutes - (updatedRecord.totalBreakMinutes || 0);
+    const overtime = totalWork > 480 ? totalWork - 480 : 0;
+
     const finalRecord = await attendanceService.updateTotals(
       record.id,
       totalWork,
-      updatedRecord.totalBreakMinutes
+      updatedRecord.totalBreakMinutes,
+      overtime
     );
 
     res.json({ success: true, data: finalRecord });
@@ -158,7 +162,10 @@ exports.update = async (req, res) => {
       const inTime = new Date(payload.clockInTimes[0]);
       const outTime = new Date(payload.clockOutTimes[0]);
       const diffMinutes = (outTime - inTime) / 60000;
-      payload.totalWorkMinutes = diffMinutes
+      const totalWorkMinutes = diffMinutes - (payload.totalBreakMinutes || 0);
+
+      payload.totalWorkMinutes = totalWorkMinutes;
+      payload.overtime = totalWorkMinutes > 480 ? totalWorkMinutes - 480 : 0;
     }
 
     const updated = await attendanceService.updateAttendance(id, payload);

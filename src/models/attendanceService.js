@@ -69,12 +69,13 @@ module.exports = {
     });
   },
 
-  updateTotals: async (id, totalWorkMinutes, totalBreakMinutes) => {
+  updateTotals: async (id, totalWorkMinutes, totalBreakMinutes, overtime) => {
     return prisma.attendance.update({
       where: { id },
       data: {
         totalWorkMinutes,
         totalBreakMinutes,
+        overtime
       },
     });
   },

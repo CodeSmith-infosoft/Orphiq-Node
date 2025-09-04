@@ -55,6 +55,8 @@ model Attendance {
   totalWorkMinutes  Int?          @map("total_work_minutes")
   totalBreakMinutes Int?          @map("total_break_minutes")
 
+  overtime          Int?          @default(0)
+
   user              User          @relation(fields: [employeeId], references: [id])
   screenshots       Screenshot[]
   request           Request[]
