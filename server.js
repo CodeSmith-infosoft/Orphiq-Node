@@ -14,7 +14,7 @@ const startServer = async () => {
     cron.schedule("*/10 * * * *", async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/auth/serverNotSleep"
+          "https://orphiq-node.onrender.com/api/auth/serverNotSleep"
         );
         const data = await response.json();
         console.log("Cron Ping Response:", data);

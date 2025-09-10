@@ -16,7 +16,6 @@ const { errorHandler, notFoundHandler } = require("./utils/responses");
 const { healthCheck } = require("./config/database");
 
 const app = express();
-console.log('jufdghseajfhgsafdhsahgf')
 app.set("trust proxy", 1);
 
 // Security middleware
