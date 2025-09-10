@@ -25,40 +25,40 @@ async function main() {
   console.log("👤 Admin user created:", adminUser.email);
 
   // Create test users
-  const testUsers = [
-    {
-      email: "john.doe@example.com",
-      password: await bcrypt.hash("password123", 12),
-      firstName: "John",
-      lastName: "Doe",
-      isActive: true,
-    },
-    {
-      email: "jane.smith@example.com",
-      password: await bcrypt.hash("password123", 12),
-      firstName: "Jane",
-      lastName: "Smith",
-      isActive: true,
-    },
-    {
-      email: "test.user@example.com",
-      password: await bcrypt.hash("password123", 12),
-      firstName: "Test",
-      lastName: "User",
-      isActive: true,
-    },
-  ];
+  // const testUsers = [
+  //   {
+  //     email: "john.doe@example.com",
+  //     password: await bcrypt.hash("password123", 12),
+  //     firstName: "John",
+  //     lastName: "Doe",
+  //     isActive: true,
+  //   },
+  //   {
+  //     email: "jane.smith@example.com",
+  //     password: await bcrypt.hash("password123", 12),
+  //     firstName: "Jane",
+  //     lastName: "Smith",
+  //     isActive: true,
+  //   },
+  //   {
+  //     email: "test.user@example.com",
+  //     password: await bcrypt.hash("password123", 12),
+  //     firstName: "Test",
+  //     lastName: "User",
+  //     isActive: true,
+  //   },
+  // ];
 
-  for (const userData of testUsers) {
-    const user = await prisma.user.upsert({
-      where: { email: userData.email },
-      update: {},
-      create: userData,
-    });
-    console.log("👤 Test user created:", user.email);
-  }
+  // for (const userData of testUsers) {
+  //   const user = await prisma.user.upsert({
+  //     where: { email: userData.email },
+  //     update: {},
+  //     create: userData,
+  //   });
+  //   console.log("👤 Test user created:", user.email);
+  // }
 
-  console.log("✅ Database seeding completed!");
+  // console.log("✅ Database seeding completed!");
 
   // Display seeded data summary
   const userCount = await prisma.user.count();
