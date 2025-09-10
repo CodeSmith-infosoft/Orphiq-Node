@@ -50,6 +50,12 @@ exports.updateLeave = async (req, res) => {
 
     res.json({ success: true, data: updated });
   } catch (err) {
+    if (err.message.includes("Insufficient")) {
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+      });
+    }
     console.error("Update Leave Error:", err);
     res.status(500).json({ success: false, message: "Error updating leave" });
   }

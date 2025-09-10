@@ -77,7 +77,7 @@ module.exports = {
       where: { id },
       data: {
         isActive: false,
-        endDate: new Date().toUTCString(),
+        endDate: new Date(),
       },
     });
   },
