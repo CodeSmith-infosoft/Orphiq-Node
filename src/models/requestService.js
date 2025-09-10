@@ -12,3 +12,19 @@ exports.getAllRequest = () =>
       },
     },
   });
+
+exports.getRequest = (userId) =>
+  prisma.request.findMany({
+    where: {
+      attendance: {
+        employeeId: userId, 
+      },
+    },
+    include: {
+      attendance: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });

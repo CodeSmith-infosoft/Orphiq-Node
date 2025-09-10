@@ -344,7 +344,15 @@ const getProfile = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
     const currentUser = req.user;
-    const user = await UserService.findAll();
+    let user;
+    if (currentUser.isAdmin) {
+      user = await UserService.findAll();
+      console.log("yes");
+    } else {
+      const singleUser = await UserService.findById(currentUser.id);
+      user = [singleUser];
+      console.log("no");
+    }
     if (!user) return errorResponse(res, "User not found", 404);
     return successResponse(res, { user });
   } catch (error) {
@@ -361,9 +369,19 @@ const logout = async (req, res) => {
     });
     return successResponse(res, { message: "Logged out successfully" });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return errorResponse(res, "Logout failed", 500);
   }
+};
+
+const serverNotSleep = async (req, res) => {
+  try {
+    const statusMessage = "Server is running";
+    return successResponse(res, { message: statusMessage });
+  } catch (err) {
+    console.error("Error in serverNotSleep:", err);
+    return errorResponse(res, "Server status check failed", 500);
+  };
 };
 
 module.exports = {
@@ -375,4 +393,5 @@ module.exports = {
   updateUser,
   getUsers,
   logout,
+  serverNotSleep,
 };

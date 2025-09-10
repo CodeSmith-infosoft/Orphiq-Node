@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const app = require("./src/app");
 const { connectDB, disconnectDB } = require("./src/config/database");
-
+const cron = require("node-cron");
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -11,6 +11,18 @@ let server;
 
 const startServer = async () => {
   try {
+    cron.schedule("*/10 * * * *", async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/auth/serverNotSleep"
+        );
+        const data = await response.json();
+        console.log("Cron Ping Response:", data);
+      } catch (error) {
+        console.error("Cron Ping Failed:", error);
+      }
+    });
+
     // Connect to database
     await connectDB();
 

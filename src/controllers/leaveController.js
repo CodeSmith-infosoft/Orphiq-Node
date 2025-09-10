@@ -21,7 +21,13 @@ exports.addLeave = async (req, res) => {
 
 exports.getLeave = async (req, res) => {
   try {
-    const leaves = await leaveService.allLeave();
+    const currentUser = req.user;
+    let leaves;
+    if (currentUser.isAdmin) {
+      leaves = await leaveService.allLeave();
+    } else {
+      leaves = await leaveService.userLeave(currentUser.id);
+    }
     res.json({ success: true, data: leaves });
   } catch (err) {
     console.error("Get Leave Error:", err);
@@ -61,4 +67,3 @@ exports.deleteLeave = async (req, res) => {
     res.status(500).json({ success: false, message: "Error deleting leave" });
   }
 };
-

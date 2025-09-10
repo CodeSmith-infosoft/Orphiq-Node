@@ -3,12 +3,12 @@ const { prisma } = require("../config/database"); // your Prisma client instance
 
 module.exports = {
   // Save screenshot path for employee
-  saveScreenshot: async (employeeId, imagePath, capturedAt = new Date()) => {
+  saveScreenshot: async (employeeId, imagePath, takenAt = new Date()) => {
     return await prisma.screenshot.create({
       data: {
         employeeId,
         imagePath,
-        capturedAt,
+        takenAt,
       },
     });
   },

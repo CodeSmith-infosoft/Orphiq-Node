@@ -16,8 +16,7 @@ const { errorHandler, notFoundHandler } = require("./utils/responses");
 const { healthCheck } = require("./config/database");
 
 const app = express();
-
-// Trust proxy (important for rate limiting and getting real IP addresses)
+console.log('jufdghseajfhgsafdhsahgf')
 app.set("trust proxy", 1);
 
 // Security middleware

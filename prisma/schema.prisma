@@ -71,7 +71,6 @@ model Screenshot {
   attendanceId Int?
   imagePath    String      @map("image_path")
   takenAt      DateTime    @default(now())    // when screenshot was taken
-  date         DateTime    @map("screenshot_date") // for quick filtering by day
   user         User        @relation(fields: [employeeId], references: [id])
   attendance   Attendance? @relation(fields: [attendanceId], references: [id])
 }

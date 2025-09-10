@@ -31,7 +31,13 @@ const addRequest = async (req, res) => {
 
 const getRequest = async (req, res) => {
   try {
-    const logs = await requestService.getAllRequest();
+    const currentUser = req.user;
+    let logs;
+    if (currentUser.isAdmin) {
+      logs = await requestService.getAllRequest();
+    } else {
+      logs = await requestService.getRequest(currentUser.id);
+    }
     res.json({ success: true, data: logs });
   } catch (err) {
     console.error("Get Request Error:", err);

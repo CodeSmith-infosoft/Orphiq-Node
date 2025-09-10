@@ -12,11 +12,13 @@ const {
   updateUser,
   getUsers,
   logout,
+  serverNotSleep,
 } = require("../controllers/authController");
 
 const { authenticateToken } = require("../middleware/authMiddleware");
 router.post("/register", register);
 router.post("/login", login);
+router.get("/serverNotSleep", serverNotSleep);
 
 router.use(authenticateToken);
 
