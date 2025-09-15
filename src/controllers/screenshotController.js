@@ -17,8 +17,8 @@ module.exports = {
 
   saveScreenshot: async (req, res) => {
     try {
-      const { employeeId, imagePath } = req.body;
-      const screenshot = await screenshotService.saveScreenshot(employeeId, imagePath);
+      const { employeeId, attendanceId, imagePath } = req.body;
+      const screenshot = await screenshotService.saveScreenshot(employeeId, attendanceId, imagePath);
       res.status(201).json({ success: true, screenshot });
     } catch (error) {
       console.error(error);
@@ -40,10 +40,9 @@ module.exports = {
   // API to get user screenshots by date
   getUserScreenshotsByDate: async (req, res) => {
     try {
-      const { userId, date } = req.params; // e.g. /screenshots/1/2025-08-21
+      const { userId } = req.params; // e.g. /screenshots/1/2025-08-21
       const screenshots = await screenshotService.getUserScreenshotsByDate(
-        parseInt(userId),
-        date
+        parseInt(userId)
       );
       res.json({ success: true, screenshots });
     } catch (error) {

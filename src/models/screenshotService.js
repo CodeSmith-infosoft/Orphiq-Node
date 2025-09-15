@@ -23,10 +23,11 @@ module.exports = {
   },
 
   // Save screenshot path for employee
-  saveScreenshot: async (employeeId, imagePath, takenAt = new Date()) => {
+  saveScreenshot: async (employeeId, attendanceId, imagePath, takenAt = new Date()) => {
     return await prisma.screenshot.create({
       data: {
         employeeId,
+        attendanceId,
         imagePath,
         takenAt,
       },
@@ -42,7 +43,7 @@ module.exports = {
         firstName: true,
         lastName: true,
         screenshots: {
-          orderBy: { capturedAt: "desc" },
+          orderBy: { takenAt: "desc" },
         },
       },
     });
@@ -51,7 +52,7 @@ module.exports = {
     return users.map((user) => {
       const grouped = {};
       user.screenshots.forEach((s) => {
-        const dateKey = s.capturedAt.toISOString().split("T")[0]; // YYYY-MM-DD
+        const dateKey = s.takenAt.toISOString().split("T")[0]; // YYYY-MM-DD
         if (!grouped[dateKey]) grouped[dateKey] = [];
         grouped[dateKey].push(s);
       });
@@ -65,21 +66,13 @@ module.exports = {
   },
 
   // Get screenshots of a specific user on a particular date
-  getUserScreenshotsByDate: async (userId, date) => {
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 999);
+  getUserScreenshotsByDate: async (userId) => {
 
     return await prisma.screenshot.findMany({
       where: {
         employeeId: userId,
-        capturedAt: {
-          gte: start,
-          lte: end,
-        },
       },
-      orderBy: { capturedAt: "asc" },
+      orderBy: { takenAt: "asc" },
     });
   },
 };

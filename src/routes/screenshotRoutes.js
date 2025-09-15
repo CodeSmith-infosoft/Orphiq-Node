@@ -12,6 +12,6 @@ router.post("/take", screenshotController.uploadScreenshotController);
 router.get("/", screenshotController.getAllScreenshotsGrouped);
 
 // Get screenshots of a specific user on a specific date
-router.get("/:userId/:date", screenshotController.getUserScreenshotsByDate);
+router.get("/:userId", screenshotController.getUserScreenshotsByDate);
 
 module.exports = router;
