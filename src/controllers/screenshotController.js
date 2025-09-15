@@ -2,7 +2,19 @@
 const screenshotService = require("../models/screenshotService");
 
 module.exports = {
-  // API to save screenshot
+  uploadScreenshotController: async(req, res) => {
+    try {
+      const { image } = req.body;
+
+      const url = await screenshotService.uploadScreenshot(image);
+
+      res.json({ success: true, url });
+    } catch (error) {
+      console.error("Screenshot upload error:", error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  },
+
   saveScreenshot: async (req, res) => {
     try {
       const { employeeId, imagePath } = req.body;

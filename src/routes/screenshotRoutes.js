@@ -6,6 +6,8 @@ const screenshotController = require("../controllers/screenshotController");
 // Save screenshot
 router.post("/", screenshotController.saveScreenshot);
 
+router.post("/take", screenshotController.uploadScreenshotController);
+
 // Get all screenshots grouped by user & date
 router.get("/", screenshotController.getAllScreenshotsGrouped);
 

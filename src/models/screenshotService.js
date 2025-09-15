@@ -1,7 +1,27 @@
 // src/services/screenshotService.js
-const { prisma } = require("../config/database"); // your Prisma client instance
+const { prisma } = require("../config/database");
+const { v2: cloudinary } = require("cloudinary");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 module.exports = {
+  uploadScreenshot: async (image) => {
+    if (!image) {
+      throw new Error("No image provided");
+    }
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "screenshots",
+    });
+    return result.secure_url;
+  },
+
   // Save screenshot path for employee
   saveScreenshot: async (employeeId, imagePath, takenAt = new Date()) => {
     return await prisma.screenshot.create({
